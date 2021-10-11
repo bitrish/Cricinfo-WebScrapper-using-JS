@@ -111,9 +111,9 @@ responseKaPromise.then(function(response){
 			
     		sheet.cell(j+2,1).string(teamsobject[i].matches[j].vs);
     		sheet.cell(j+2,2).string(teamsobject[i].matches[j].selfScore);
-            sheet.cell(j+2,3).string(teamsobject[i].matches[j].oppScore);
+                sheet.cell(j+2,3).string(teamsobject[i].matches[j].oppScore);
     		sheet.cell(j+2,4).string(teamsobject[i].matches[j].result);
-			sheet.cell(j+2,9).string(teamsobject[i].matches[j].info);
+		sheet.cell(j+2,9).string(teamsobject[i].matches[j].info);
     	}
     }
     wb.write(args.excel);
@@ -123,7 +123,7 @@ responseKaPromise.then(function(response){
     let teamFN = path.join(args.datafolder, teamsobject[i].name);
     fs.mkdirSync(teamFN);
     for (let j = 0; j < teamsobject[i].matches.length; j++) {
-        let matchFileName = path.join(teamFN, teamsobject[i].matches[j].vs + ".pdf");
+        let matchFileName = path.join(teamFN, teamsobject[i].matches[j].vs);
         createScoreCard(teamsobject[i].name, teamsobject[i].matches[j], matchFileName);
     }
 }
@@ -172,7 +172,13 @@ function createScoreCard(teamName, match, matchFileName) {
         });
         let finalPDFBytesKaPromise = pdfdoc.save();
         finalPDFBytesKaPromise.then(function(finalPDFBytes){
-            fs.writeFileSync(matchFileName, finalPDFBytes);
+            if(fs.existsSync(matchFileName+".pdf")==true)
+		{
+		fs.writeFileSync(matchFileName+"1.pdf",finalPDFBytes);
+		}
+		else{
+		fs.writeFileSync(matchFileName+".pdf",finalPDFBytes);
+		}
         })
     })
 }
